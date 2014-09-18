@@ -8,9 +8,9 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
 
 
-public class GridAdditionHandler extends AbstractHandler {
+public class GridGenerationHandler extends AbstractHandler {
 
-	public GridAdditionHandler() {
+	public GridGenerationHandler() {
 	}
 
 

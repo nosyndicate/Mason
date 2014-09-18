@@ -1,4 +1,4 @@
-package edu.gmu.cs.mason.wizard.agent;
+package edu.gmu.cs.mason.wizards.agent;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;

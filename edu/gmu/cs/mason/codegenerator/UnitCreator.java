@@ -32,11 +32,9 @@ import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.internal.handlers.WizardHandler.New;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.templates.Template;
-import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.launching.JavaRuntime;
 
 

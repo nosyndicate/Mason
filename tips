@@ -1,36 +1,4 @@
-1. some of the class may showed up in other plugins (bundle), for example, WizardNewProjectCreationPage is 
-in org.eclipse.ui.dialogs package, which can showed up in org.eclipse.ui or org.eclipse.ui.ide bundles.
 
-2. some bundle may use the bundle which have not been imported, those indirectly imported bundle should be imported
-
-3. use the source bundle (*.source) may prevent plugin to work 
-
-4. To add item in new submenu in popup menu of package explorer.
-  Do not do that using a menu contribution. 
-  Instead provide a newWizard implementation to contribute the code for creating some new element. 
-  The Eclipse UI will then automatically add that wizard at the right places.
-  The displayed entries for the sub menu depend on the current perspective
-  (e.g. it makes no sense to have "New Java class" in non Java perspectives). 
-  That's why you want to create a newWizardShortcut extension for each perspective, 
-  where you want to see that context menu sub menu item. (three perspective for sure: java, debug and resource)
-  if it doesn't show up, try configure the perspective menu visibility
-  
-  
-5. although it is possible to add menu items in source menu in context popup menu, it is unlikely to do the same
-   things with main menu due to this reason :
-   http://stackoverflow.com/questions/7113380/how-to-extend-the-source-menu-in-eclipse-or-what-is-its-locationuri
-   
-   Another thing need to mention is that, although with plugin spy to inspect the source menu, something like 
-   "menu:XXXXX?YY=ZZ" showed up, but to add the item successfully, you want to use "popup:XXXXX?YY=ZZ"
-   
 6. Subclass a Handler from AbstractHandler instead of IHandler, otherwise without the implement of isEnabled() method,
    the command on the menu may grey out
    
-7. How to use PropertyTester to make sure the command in menu is validate
-   To use PropertyTester, we first need the tester which extend the PropertyTester Extension Point, which have five 
-   attributes, according to the document of eclipse plugin development:
-   1) id - unique identifier for the property tester
-   2) type - the type to be extended by this property tester
-   3) namespace - a unique id determining the name space the properties are added to
-   4) properties - a comma separated list of properties provided by this property tester
-   5) class - the name of the class that implements the testing methods. The class must be public and extend org.eclipse.core.expressions.PropertyTester with a public 0-argument constructor.

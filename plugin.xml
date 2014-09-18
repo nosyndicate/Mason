@@ -21,7 +21,7 @@
       <wizard
             canFinishEarly="false"
             category="edu.gmu.cs.mason.category.wizards"
-            class="edu.gmu.cs.mason.wizard.agent.AgentWizard"
+            class="edu.gmu.cs.mason.wizards.agent.AgentWizard"
             icon="icons/sample.gif"
             id="edu.gmu.cs.mason.wizard.agent"
             name="Mason Agent">
@@ -57,15 +57,9 @@
             allPopups="false"
             locationURI="popup:org.eclipse.jdt.ui.source.menu?after=edu.gmu.cs.mason.menu.source.separator">
          <command
-               commandId="edu.gmu.cs.mason.command.AddInspector"
-               label="Add Inspector"
+               commandId="edu.gmu.cs.mason.command.GenerateProperty"
+               label="Generate Property"
                style="push">
-            <visibleWhen
-                  checkEnabled="false">
-               <test
-                     property="Mason.test2">
-               </test>
-            </visibleWhen>
          </command>
          <command
                commandId="edu.gmu.cs.mason.command.AddGrid"
@@ -85,9 +79,9 @@
          point="org.eclipse.ui.commands">
       <command
             categoryId="edu.gmu.cs.mason.command.category"
-            defaultHandler="edu.gmu.cs.mason.handlers.InspectorAdditionHandler"
-            id="edu.gmu.cs.mason.command.AddInspector"
-            name="Add Inspector">
+            defaultHandler="edu.gmu.cs.mason.handlers.PropertyGenerationHandler"
+            id="edu.gmu.cs.mason.command.GenerateProperty"
+            name="Generate Property Functions">
       </command>
       <category
             description="Defines bunch of command used by Mason Eclipse Plugins"
@@ -109,16 +103,6 @@
                class="edu.gmu.cs.mason.nature.MasonProjectNature">
          </run>
       </runtime>
-   </extension>
-   <extension
-         point="org.eclipse.core.expressions.propertyTesters">
-      <propertyTester
-            class="mason.PropertyTester1"
-            id="Mason.propertyTester1"
-            namespace="Mason.propertyTester1"
-            properties="Mason.propertyTester1"
-            type="mason.PropertyTester1">
-      </propertyTester>
    </extension>
 
 </plugin>
