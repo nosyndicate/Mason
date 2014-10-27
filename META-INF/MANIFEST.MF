@@ -15,6 +15,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.launching,
  org.eclipse.ui.ide;bundle-version="3.9.1",
  org.eclipse.jface.text;bundle-version="3.8.101",
- org.eclipse.core.expressions;bundle-version="3.4.500"
+ org.eclipse.core.expressions;bundle-version="3.4.500",
+ org.eclipse.ui.editors;bundle-version="3.8.100"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy

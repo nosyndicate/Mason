@@ -12,11 +12,13 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jface.text.Document;
+
 import edu.gmu.cs.mason.wizards.model.AgentInformation;
 import edu.gmu.cs.mason.wizards.model.FieldInformation;
 import edu.gmu.cs.mason.wizards.model.ProjectInformation;
@@ -31,6 +33,7 @@ public class SimStateFactory {
 	private ICompilationUnit cu = null;
 	private TypeDeclaration classDeclaration = null;
 	private MethodDeclaration startMethod = null;
+	private MethodDeclaration createFieldMethod = null;
 	//public HashMap<InsertionPoint, InsertionLocation> insertionPoints;
 
 	
@@ -103,19 +106,28 @@ public class SimStateFactory {
 			method.setBody(block);
 			classDeclaration.bodyDeclarations().add(method);
 			
+						
+			// add create field method
+			modifiers = new String[]{"public"};
+			createFieldMethod = Coder.methodDef(unit.getAST(), modifiers, "void", "createField", null);
+			classDeclaration.bodyDeclarations().add(createFieldMethod);
+			
 			//add start method
 			modifiers = new String[]{"public"};
 			startMethod = Coder.methodDef(unit.getAST(), modifiers, "void", "start", null);
 			SuperMethodInvocation methodInvocation = Coder.superMethodInvocation(unit.getAST(),"start",null);
 			startMethod.getBody().statements().add(unit.getAST().newExpressionStatement(methodInvocation));
+			
+			MethodInvocation methodInvocation2 = Coder.methodInvocation(unit.getAST(), null, "createField", null);
+			startMethod.getBody().statements().add(unit.getAST().newExpressionStatement(methodInvocation2));
 			classDeclaration.bodyDeclarations().add(startMethod);
-						
+			
 			
 			//add fields
 			for(int i = 0;i<projectInfo.fieldInfoList.size();++i)
 			{
 				FieldInformation fieldInfo = projectInfo.fieldInfoList.get(i);
-				this.addSimulationField(unit.getAST(),classDeclaration, startMethod, fieldInfo);
+				this.addSimulationField(unit.getAST(),classDeclaration, createFieldMethod, fieldInfo);
 			}
 
 			
@@ -178,7 +190,7 @@ public class SimStateFactory {
 			
 			// remove the node from the parent, to make sure it can be add to the body of the method
 			statement.delete();
-			methodDeclaration.getBody().statements().add(1,statement);
+			methodDeclaration.getBody().statements().add(0,statement); // add to the front
 		}
 
 		

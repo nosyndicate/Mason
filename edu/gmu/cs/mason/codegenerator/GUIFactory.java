@@ -6,7 +6,7 @@ import edu.gmu.cs.mason.wizards.model.AgentInformation;
 import edu.gmu.cs.mason.wizards.model.FieldInformation;
 import edu.gmu.cs.mason.wizards.model.ProjectInformation;
 import edu.gmu.cs.mason.wizards.model.AgentInformation.SimplePortrayal;
-import edu.gmu.cs.mason.wizards.model.FieldInformation.PortrayType;
+import edu.gmu.cs.mason.wizards.model.FieldInformation.PortrayalType;
 
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaModelException;
@@ -113,6 +113,8 @@ public class GUIFactory {
 			//add quit method
 			modifiers = new String[]{"public"};
 			method = Coder.methodDef(unit.getAST(), modifiers, "void", "quit", null);
+			
+			// TODO use StringBuffer instead
 			source = "super.quit();" +
 					"if(displayFrame != null){" +
 					"displayFrame.dispose();}" + 
@@ -122,12 +124,18 @@ public class GUIFactory {
 			Coder.addMethodBody(unit.getAST(), method, source);
 			classDeclaration.bodyDeclarations().add(method);
 			
+			// add createFieldPortrayals method
+			modifiers = new String[]{"public"};
+			method = Coder.methodDef(unit.getAST(), modifiers, "void", "createFieldPortrayals", null);
+			source = projectInfo.simStateClassName+ " " + Coder.lowerFirstLetter(projectInfo.simStateClassName) + " = (" + 
+					projectInfo.simStateClassName + ")state;";
+			Coder.addMethodBody(unit.getAST(), method, source);
+			classDeclaration.bodyDeclarations().add(method);
 			
 			//add setupPortrayls method
 			modifiers = new String[]{"public"};
 			method = Coder.methodDef(unit.getAST(), modifiers, "void", "setupPortrayals", null);
-			source = projectInfo.simStateClassName+ " " + Coder.lowerFirstLetter(projectInfo.simStateClassName) + " = (" + 
-					projectInfo.simStateClassName + ")state;"+
+			source = "createFieldPortrayals();" +
 					"display.reset();" + 
 					"display.setBackdrop(Color.white);" + 
 					"display.repaint();";
@@ -174,23 +182,27 @@ public class GUIFactory {
 			for(int i = 0;i<length;++i)
 			{
 				FieldInformation fieldInfo = projectInfo.fieldInfoList.get(i);
-				if(fieldInfo.getPortrayal()!=PortrayType.None)
+				if(fieldInfo.getPortrayal()!=PortrayalType.None)
 				{
-					addFieldPortrayal(unit, fieldInfo.getPortrayal().toString(),fieldInfo.getFieldName(), classDeclaration, "setupPortrayals", projectInfo.simStateClassName);
+					addFieldPortrayal(unit,
+							fieldInfo.getPortrayal().toString(),
+							fieldInfo.getFieldName(), 
+							fieldInfo.getPortrayalName(), classDeclaration,
+							"createFieldPortrayals", projectInfo.simStateClassName);
 				}
 			}
 			
 			
 			//add agent portrayal
-			length = projectInfo.agentInfoList.size();
-			for(int i = 0;i<length;++i)
-			{
-				AgentInformation agentInfo = projectInfo.agentInfoList.get(i);
-				if(agentInfo.getPortrayal()!=SimplePortrayal.None)
-				{
-					addAgentPortrayal(unit, agentInfo, "setupPortrayals");
-				}
-			}
+//			length = projectInfo.agentInfoList.size();
+//			for(int i = 0;i<length;++i)
+//			{
+//				AgentInformation agentInfo = projectInfo.agentInfoList.get(i);
+//				if(agentInfo.getPortrayal()!=SimplePortrayal.None)
+//				{
+//					addAgentPortrayal(unit, agentInfo, "setupPortrayals");
+//				}
+//			}
 
 			
 
@@ -215,7 +227,7 @@ public class GUIFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void addFieldPortrayal(CompilationUnit unit,String fieldPortrayal, String fieldName, TypeDeclaration classDeclaration, String method, String simState) {
+	private void addFieldPortrayal(CompilationUnit unit,String fieldPortrayal, String fieldName, String fieldPortrayalName, TypeDeclaration classDeclaration, String method, String simState) {
 		String portrayal = fieldName + "Portrayal";
 		
 		String initializer = "new "+ fieldPortrayal + "()";
@@ -224,7 +236,7 @@ public class GUIFactory {
 		
 		classDeclaration.bodyDeclarations().add(0, fieldDeclaration);
 		
-		unit.accept(new FieldPortrayalVisitor(portrayal, fieldName, simState, method));
+		unit.accept(new FieldPortrayalVisitor(portrayal, fieldName, fieldPortrayalName, simState, method));
 		
 	}
 }
@@ -235,17 +247,25 @@ class FieldPortrayalVisitor extends ASTVisitor{
 	
 	private String portrayal;
 	private String fieldName;
+	private String fieldPortrayalName;
 	private String simState;
 	private String method;
 	
 	
-	public FieldPortrayalVisitor(String portrayal, String fieldName, String simState, String method)
+	public FieldPortrayalVisitor(String portrayal, String fieldName, String fieldPotrayalName, String simState, String method)
 	{
 		this.portrayal = portrayal;
 		this.fieldName = fieldName;
+		if(fieldPotrayalName==null||fieldPotrayalName.isEmpty())
+			this.fieldPortrayalName = this.fieldName.toUpperCase();
+		else {
+			this.fieldPortrayalName = fieldPotrayalName;
+		}
 		this.simState = simState;
 		this.method = method;
+		
 	}
+	
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -253,7 +273,8 @@ class FieldPortrayalVisitor extends ASTVisitor{
 		String name = node.getName().toString();
 		if(name.equals("init"))
 		{
-			String source = "display.attach("+portrayal+", \""+fieldName.toUpperCase()+"\")";
+			String source = "display.attach("+portrayal+", \""+this.fieldPortrayalName+"\")";
+			
 			Expression expression = Coder.expressionDef(node.getAST(), source);
 			node.getBody().statements().add(node.getAST().newExpressionStatement(expression));
 		}
@@ -264,6 +285,7 @@ class FieldPortrayalVisitor extends ASTVisitor{
 			Expression expression = Coder.expressionDef(node.getAST(), source);
 			node.getBody().statements().add(node.getAST().newExpressionStatement(expression));
 		}
+		
 		
 		
 		return false;

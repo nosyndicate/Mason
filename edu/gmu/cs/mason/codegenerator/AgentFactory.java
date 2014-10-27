@@ -3,14 +3,15 @@ package edu.gmu.cs.mason.codegenerator;
 
 import java.util.HashMap;
 
-
 import edu.gmu.cs.mason.wizards.model.AgentInformation;
 import edu.gmu.cs.mason.wizards.model.ProjectInformation;
+
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jface.text.Document;
 
@@ -29,7 +30,7 @@ public class AgentFactory {
 	{
 		this.agentInfo = info;
 		this.cu = cu;
-		this.packegeName = projectInfo.packageName;
+		this.packegeName = info.getPackageName();
 		this.SimStateUnit = projectInfo.simStateClassName;
 		//this.insertionPoints = new HashMap<InsertionPoint, InsertionLocation>();
 	}
@@ -43,7 +44,7 @@ public class AgentFactory {
 		else {
 			instance.agentInfo = info;
 			instance.cu = cu;
-			instance.packegeName = projectInfo.packageName;
+			instance.packegeName = info.getPackageName();
 			instance.SimStateUnit = projectInfo.simStateClassName;
 		}
 		
@@ -66,18 +67,21 @@ public class AgentFactory {
 			
 			
 			//add package
+			
 			Coder.packageDef(unit, unit.getAST(), this.packegeName);
 			
 			//add class
 			classDeclaration = Coder.classDef(unit, unit.getAST(), typeName, null, superInterfaceName);
 			
 			
-			//add Serial Number
+			// add Serial Number
 			Coder.addSerialNumber(unit.getAST(), classDeclaration);
 
+			// add constructor
+			MethodDeclaration method = Coder.constructorDef(unit.getAST(), typeName, null);
+			classDeclaration.bodyDeclarations().add(method);
 			
-			
-			//add main method
+			// add main method
 			String[] modifiers = {"public"};
 			String[] parameters = new String[]{"SimState","state"};
 			stepMethodDeclaration = Coder.methodDef(unit.getAST(), modifiers, "void", "step", parameters);

@@ -1,5 +1,10 @@
 package edu.gmu.cs.mason;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.internal.ui.IJavaStatusConstants;
+import org.eclipse.jdt.internal.ui.JavaUIMessages;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -46,5 +51,19 @@ public class Activator extends AbstractUIPlugin {
 	public static Activator getDefault() {
 		return plugin;
 	}
+	
+	public static String getPluginId() {
+		return Activator.PLUGIN_ID;
+	}
+	
+	public static void log(String message, Throwable e) {
+		final int DefaultCode = 50001;
+		log(new Status(IStatus.ERROR, getPluginId(), DefaultCode, message, e));
+	}	
+	
+	public static void log(IStatus status) {
+		getDefault().getLog().log(status);
+	}
+
 
 }

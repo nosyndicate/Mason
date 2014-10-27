@@ -104,5 +104,43 @@
          </run>
       </runtime>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors.templates">
+      <resolver
+            class="edu.gmu.cs.mason.template.AgentTypeResolver"
+            contextTypeId="java"
+            type="agentType">
+      </resolver>
+      <resolver
+            class="edu.gmu.cs.mason.template.FieldVariableResolver"
+            contextTypeId="java"
+            type="fieldVar">
+      </resolver>
+      <resolver
+            class="edu.gmu.cs.mason.template.FieldPortrayalVariableResolver"
+            contextTypeId="java"
+            type="portrayalVar">
+      </resolver>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="edu.gmu.cs.mason.preferences.GeneralPreferencePage"
+            id="edu.gmu.cs.mason.preferences.general"
+            name="Mason">
+      </page>
+      <page
+            category="edu.gmu.cs.mason.preferences.general"
+            class="edu.gmu.cs.mason.preferences.WizardPreferencePage"
+            id="edu.gmu.cs.mason.preferences.wizards"
+            name="Wizards">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="edu.gmu.cs.mason.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

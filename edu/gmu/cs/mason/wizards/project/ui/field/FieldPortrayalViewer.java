@@ -22,15 +22,18 @@ import org.eclipse.swt.widgets.TableColumn;
 public class FieldPortrayalViewer {
 	
 	private TableViewer tableViewer;
-	private FieldPortrayalEditingSupport editingSupport;
+	private FieldPortrayalEditingSupport portrayalSupport;
+	private FieldPortrayalNameEditingSupport portrayalNameSupport;
 	
 	private static final int FIELD_BOUND = 150;
-	private static final int PORTRAY_BOUND = 150;
+	private static final int PORTRAYAL_BOUND = 150;
 	private static final int TYPE_BOUND = 200;
+	private static final int PORTRAYAL_NAME_BOUND = 200;
 	
 	private static final String FIELD = "Field name";
 	private static final String TYPE = "Field type";
-	private static final String PORTRAY = "Portrayal of the field";
+	private static final String PORTRAYAL = "Portrayal of the field";
+	private static final String PORTRAYAL_NAME = "Portrayal name of the field";
 	
 	
 	public FieldPortrayalViewer(Group group, int style) {
@@ -48,7 +51,7 @@ public class FieldPortrayalViewer {
 			public void beforeEditorActivated(ColumnViewerEditorActivationEvent event) {
 				IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
 				FieldInformation fieldInfo = (FieldInformation) selection.getFirstElement();
-				editingSupport.setProperInput(fieldInfo);
+				portrayalSupport.setProperInput(fieldInfo);
 			}
 			
 			@Override
@@ -87,14 +90,25 @@ public class FieldPortrayalViewer {
 	      }
 	    });
 
-	    col = createTableViewerColumn(PORTRAY, PORTRAY_BOUND, 2);
-	    editingSupport = new FieldPortrayalEditingSupport(col.getViewer());
-	    col.setEditingSupport(editingSupport);
+	    col = createTableViewerColumn(PORTRAYAL, PORTRAYAL_BOUND, 2);
+	    portrayalSupport = new FieldPortrayalEditingSupport(col.getViewer());
+	    col.setEditingSupport(portrayalSupport);
 	    col.setLabelProvider(new ColumnLabelProvider() {
 	      @Override
 	      public String getText(Object element) {
 	    	  FieldInformation fieldInfo = (FieldInformation) element;
 	    	  return fieldInfo.getPortrayal().toString();
+	      }
+	    });
+	    
+	    col = createTableViewerColumn(PORTRAYAL_NAME, PORTRAYAL_NAME_BOUND, 3);
+	    portrayalNameSupport = new FieldPortrayalNameEditingSupport(col.getViewer());
+	    col.setEditingSupport(portrayalNameSupport);
+	    col.setLabelProvider(new ColumnLabelProvider() {
+	      @Override
+	      public String getText(Object element) {
+	    	  FieldInformation fieldInfo = (FieldInformation) element;
+	    	  return fieldInfo.getPortrayalName();
 	      }
 	    });
 	}

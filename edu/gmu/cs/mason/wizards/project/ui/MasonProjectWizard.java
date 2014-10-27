@@ -19,7 +19,7 @@ public class MasonProjectWizard extends Wizard implements INewWizard {
 	public static final String WIZARD_NAME = "MASON Project Wizard";
 	
 	public static final int PAGE_WIDTH = 650;
-	public static final int PAGE_HEIGHT = 670;
+	public static final int PAGE_HEIGHT = 570;
 	
 	// Our wizard pages
 	private ProjectInfoPage infoPage;
@@ -53,20 +53,24 @@ public class MasonProjectWizard extends Wizard implements INewWizard {
 	    //add basic info page of project
 	    this.infoPage = new ProjectInfoPage("InfoPage",projectInfo);
 	    addPage(this.infoPage);
+	    infoPage.setWizard(this);
 	    
 	    // This page gather the information of SimState class
 	    // The information could be the name of the class, the information of field
 	    this.classPage = new SimulationClassPage("ClassPage",projectInfo);
 	    addPage(this.classPage);
+	    classPage.setWizard(this);
 
 	    // This page gather the information of Agents.
 	    // The information includes how the agents is scheduled, and which field it scheduled.
 	    this.agentsPage = new AgentsPage("AgentsPage",projectInfo);
 	    addPage(this.agentsPage);
+	    agentsPage.setWizard(this);
 	    
 	    // The information of Display and how to portray the field and agent
 	    this.guiClassPage = new GUIClassPage("GUIClassPage",projectInfo);
 	    addPage(this.guiClassPage);
+	    guiClassPage.setWizard(this);
 	    
 	}
 

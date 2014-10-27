@@ -30,7 +30,7 @@ public class FieldInformation {
 	}
 	
 	
-	public enum PortrayType
+	public enum PortrayalType
 	{
 		None,
 		ContinuousPortrayal2D,
@@ -53,9 +53,12 @@ public class FieldInformation {
 	
 	
 	private String fieldName;
+	private String portrayalName;
+	
+
 	private Type fieldType;
 	private Dimension dimension;
-	private PortrayType portrayal = PortrayType.None;
+	private PortrayalType portrayal = PortrayalType.None;
 	private double width;
 	private double height;
 	private double length;
@@ -70,6 +73,15 @@ public class FieldInformation {
 		this.fieldName = fieldName;
 	}
 
+	
+	public String getPortrayalName() {
+		return portrayalName;
+	}
+
+	public void setPortrayalName(String portrayalName) {
+		this.portrayalName = portrayalName;
+	}
+	
 	public void setFieldInformation(FieldInformation info)
 	{
 		this.setDimension(info.getDimension());
@@ -169,11 +181,11 @@ public class FieldInformation {
 		}
 	}
 	
-	public PortrayType getPortrayal() {
+	public PortrayalType getPortrayal() {
 		return portrayal;
 	}
 
-	public void setPortrayal(PortrayType portrayal) {
+	public void setPortrayal(PortrayalType portrayal) {
 		this.portrayal = portrayal;
 	}
 

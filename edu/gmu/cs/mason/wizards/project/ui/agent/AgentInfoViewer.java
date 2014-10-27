@@ -14,18 +14,12 @@ import org.eclipse.swt.widgets.TableColumn;
 
 public class AgentInfoViewer {
 	
-	private static final int NUMBER_BOUND = 130;
-	private static final int SCHEDULE_BOUND = 140;
-	private static final int FIELD_BOUND = 90;
-	private static final int DISTRIBUTE_BOUND = 100;
+	private static final int PACKAGE_BOUND = 130;
 	private static final int AGENT_BOUND = 100;
 
 	
 	private static final String AGENT = "Agent class";
-	private static final String DISTRIBUTE = "Distribution";
-	private static final String SCHEDULE = "Schedule";
-	private static final String FIELD = "Field Name";
-	private static final String NUMBER = "Number of agents";
+	private static final String PACKAGE = "Packge of agent file";
 
 	private TableViewer tableViewer;
 	
@@ -57,51 +51,14 @@ public class AgentInfoViewer {
 
 	    
 
-	    col = createTableViewerColumn(NUMBER, NUMBER_BOUND, 1);
+	    col = createTableViewerColumn(PACKAGE, PACKAGE_BOUND, 1);
 	    col.setLabelProvider(new ColumnLabelProvider() {
 	      @Override
 	      public String getText(Object element) {
 	    	  AgentInformation agentInfo = (AgentInformation) element;
-	    	  return agentInfo.getAgentNumber()+"";
+	    	  return agentInfo.getPackageName();
 	      }
 	    });
-
-	    
-
-	    col = createTableViewerColumn(FIELD, FIELD_BOUND, 2);
-	    col.setLabelProvider(new ColumnLabelProvider() {
-	      @Override
-	      public String getText(Object element) {
-	    	  AgentInformation agentInfo = (AgentInformation) element;
-		      if(agentInfo.getField()!=null)
-		    	  return agentInfo.getField().getFieldName();
-		      else {
-				return "";
-			}
-	      }
-	    });
-
-
-	    
-//	    col = createTableViewerColumn(SCHEDULE, SCHEDULE_BOUND, 3);
-//	    col.setLabelProvider(new ColumnLabelProvider() {
-//	      @Override
-//	      public String getText(Object element) {
-//	    	  AgentInformation agentInfo = (AgentInformation) element;
-//		      return agentInfo.getScheduleMode().toString();
-//	      }
-//	    });
-
-	    
-//	    col = createTableViewerColumn(DISTRIBUTE, DISTRIBUTE_BOUND, 4);
-//	    col.setLabelProvider(new ColumnLabelProvider() {
-//	      @Override
-//	      public String getText(Object element) {
-//	    	  AgentInformation agentInfo = (AgentInformation) element;
-//		      return agentInfo.getDistributionMode().toString();
-//	      }
-//	    });
-
 
 	  }
 

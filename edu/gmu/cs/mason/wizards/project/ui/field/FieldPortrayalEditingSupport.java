@@ -3,14 +3,19 @@ package edu.gmu.cs.mason.wizards.project.ui.field;
 
 import java.util.HashMap;
 
-import edu.gmu.cs.mason.wizards.model.FieldInformation;
-import edu.gmu.cs.mason.wizards.model.FieldInformation.PortrayType;
+import javax.swing.AbstractCellEditor;
 
+import edu.gmu.cs.mason.wizards.model.FieldInformation;
+import edu.gmu.cs.mason.wizards.model.FieldInformation.PortrayalType;
+
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ComboBoxViewerCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -21,52 +26,80 @@ public class FieldPortrayalEditingSupport extends EditingSupport {
 
 	static 
 	{
-		FieldPortrayalEditingSupport.fieldPortrayMap = new HashMap<String, PortrayType[]>();
+		FieldPortrayalEditingSupport.fieldPortrayMap = new HashMap<String, PortrayalType[]>();
+		FieldPortrayalEditingSupport.fieldPortrayals = new HashMap<String, Integer>();
+		
 		//continuous
-		PortrayType[] types = new PortrayType[]{PortrayType.None,PortrayType.ContinuousPortrayal2D};
+		PortrayalType[] types = new PortrayalType[]{PortrayalType.None,PortrayalType.ContinuousPortrayal2D};
 		FieldPortrayalEditingSupport.fieldPortrayMap.put("Continuous2D", types);
-		types = new PortrayType[]{PortrayType.None,PortrayType.ContinuousPortrayal3D};
+		types = new PortrayalType[]{PortrayalType.None,PortrayalType.ContinuousPortrayal3D};
 		FieldPortrayalEditingSupport.fieldPortrayMap.put("Continuous3D", types);
 		
+		FieldPortrayalEditingSupport.fieldPortrayals.put("ContinuousPortrayal2D", 0);
+		FieldPortrayalEditingSupport.fieldPortrayals.put("ContinuousPortrayal3D", 0);
+		
 		//IntGrid and DoubleGrid
-		types = new PortrayType[]{PortrayType.None,PortrayType.ValueGridPortrayal2D,
-				PortrayType.HexaValueGridPortrayal2D,
-				PortrayType.FastValueGridPortrayal2D,PortrayType.FastHexaValueGridPortrayal2D};
+		types = new PortrayalType[]{PortrayalType.None,PortrayalType.ValueGridPortrayal2D,
+				PortrayalType.HexaValueGridPortrayal2D,
+				PortrayalType.FastValueGridPortrayal2D,PortrayalType.FastHexaValueGridPortrayal2D};
 		FieldPortrayalEditingSupport.fieldPortrayMap.put("IntGrid2D", types);
 		FieldPortrayalEditingSupport.fieldPortrayMap.put("DoubleGrid2D", types);
 		
-		types = new PortrayType[]{PortrayType.None,PortrayType.ValueGridPortrayal3D};
+		FieldPortrayalEditingSupport.fieldPortrayals.put("ValueGridPortrayal2D", 0);
+		FieldPortrayalEditingSupport.fieldPortrayals.put("HexaValueGridPortrayal2D", 0);
+		FieldPortrayalEditingSupport.fieldPortrayals.put("FastValueGridPortrayal2D", 0);
+		FieldPortrayalEditingSupport.fieldPortrayals.put("FastHexaValueGridPortrayal2D", 0);
+		
+		types = new PortrayalType[]{PortrayalType.None,PortrayalType.ValueGridPortrayal3D};
 		FieldPortrayalEditingSupport.fieldPortrayMap.put("IntGrid3D", types);
 		FieldPortrayalEditingSupport.fieldPortrayMap.put("DoubleGrid3D", types);
 		
+		FieldPortrayalEditingSupport.fieldPortrayals.put("ValueGridPortrayal3D", 0);
+		
 		//ObjectGrid
-		types = new PortrayType[]{PortrayType.None,PortrayType.ObjectGridPortrayal2D,
-				PortrayType.HexaObjectGridPortrayal2D,
-				PortrayType.FastObjectGridPortrayal2D,PortrayType.FastHexaObjectGridPortrayal2D};
+		types = new PortrayalType[]{PortrayalType.None,PortrayalType.ObjectGridPortrayal2D,
+				PortrayalType.HexaObjectGridPortrayal2D,
+				PortrayalType.FastObjectGridPortrayal2D,PortrayalType.FastHexaObjectGridPortrayal2D};
 		FieldPortrayalEditingSupport.fieldPortrayMap.put("ObjectGrid2D", types);
-		types = new PortrayType[]{PortrayType.None,PortrayType.ObjectGridPortrayal3D};
+		types = new PortrayalType[]{PortrayalType.None,PortrayalType.ObjectGridPortrayal3D};
 		FieldPortrayalEditingSupport.fieldPortrayMap.put("ObjectGrid3D", types);
 		
+		FieldPortrayalEditingSupport.fieldPortrayals.put("ObjectGridPortrayal2D", 0);
+		FieldPortrayalEditingSupport.fieldPortrayals.put("HexaObjectGridPortrayal2D", 0);
+		FieldPortrayalEditingSupport.fieldPortrayals.put("FastObjectGridPortrayal2D", 0);
+		FieldPortrayalEditingSupport.fieldPortrayals.put("FastHexaObjectGridPortrayal2D", 0);
+		FieldPortrayalEditingSupport.fieldPortrayals.put("ObjectGridPortrayal3D", 0);
+		
 		//SparseGrid
-		types = new PortrayType[]{PortrayType.None,PortrayType.SparseGridPortrayal2D, 
-				PortrayType.HexaSparseGridPortrayal2D};
+		types = new PortrayalType[]{PortrayalType.None,PortrayalType.SparseGridPortrayal2D, 
+				PortrayalType.HexaSparseGridPortrayal2D};
 		FieldPortrayalEditingSupport.fieldPortrayMap.put("SparseGrid2D", types);
-		types = new PortrayType[]{PortrayType.None,PortrayType.SparseGridPortrayal3D};
+		types = new PortrayalType[]{PortrayalType.None,PortrayalType.SparseGridPortrayal3D};
 		FieldPortrayalEditingSupport.fieldPortrayMap.put("SparseGrid3D", types);
 		
+		FieldPortrayalEditingSupport.fieldPortrayals.put("SparseGridPortrayal2D", 0);
+		FieldPortrayalEditingSupport.fieldPortrayals.put("HexaSparseGridPortrayal2D", 0);
+		FieldPortrayalEditingSupport.fieldPortrayals.put("SparseGridPortrayal3D", 0);
+		
 		//DenseGrid
-		types = new PortrayType[]{PortrayType.None,PortrayType.DenseGridPortrayal2D};
+		types = new PortrayalType[]{PortrayalType.None,PortrayalType.DenseGridPortrayal2D};
 		FieldPortrayalEditingSupport.fieldPortrayMap.put("DenseGrid2D", types);
 		
-		types = new PortrayType[]{PortrayType.None};
+		FieldPortrayalEditingSupport.fieldPortrayals.put("DenseGridPortrayal2D", 0);
+		
+		types = new PortrayalType[]{PortrayalType.None};
 		FieldPortrayalEditingSupport.fieldPortrayMap.put("DenseGrid3D", types);
+		
+		
+		
+		
 		
 		
 	}
 	
 	
-	public static HashMap<String, PortrayType[]> fieldPortrayMap;
-
+	public static HashMap<String, PortrayalType[]> fieldPortrayMap;
+	public static HashMap<String, Integer> fieldPortrayals;
 	
 	private ComboBoxViewerCellEditor cellEditor = null;
 	
@@ -77,8 +110,8 @@ public class FieldPortrayalEditingSupport extends EditingSupport {
 		cellEditor = new ComboBoxViewerCellEditor((Composite) getViewer().getControl(), SWT.READ_ONLY);
 		cellEditor.setLabelProvider(new LabelProvider());
 		cellEditor.setContentProvider(ArrayContentProvider.getInstance());
+		cellEditor.setActivationStyle(ComboBoxViewerCellEditor.DROP_DOWN_ON_MOUSE_ACTIVATION);
 
-		
 	}
 	
 
@@ -102,11 +135,15 @@ public class FieldPortrayalEditingSupport extends EditingSupport {
 		return fieldInfo.getPortrayal();
 	}
 
-
+	/** 
+	 *  This method only called after the table viewer lost the focus
+	 *  So just select the item in the drop down list won't have the affect
+	 *  unless another press of the mouse happen
+	 */
 	@Override
 	protected void setValue(Object element, Object value) {
 		FieldInformation fieldInfo = (FieldInformation)element;
-		PortrayType portrayal = (PortrayType)value;
+		PortrayalType portrayal = (PortrayalType)value;
 		fieldInfo.setPortrayal(portrayal);
 		getViewer().update(element, null);
 	}
@@ -115,7 +152,7 @@ public class FieldPortrayalEditingSupport extends EditingSupport {
 
 	public void setProperInput(FieldInformation fieldInfo) {
 		String key = fieldInfo.getFieldType()+fieldInfo.getDimension().toString();
-		PortrayType[] values = (PortrayType[]) FieldPortrayalEditingSupport.fieldPortrayMap.get(key);
+		PortrayalType[] values = (PortrayalType[]) FieldPortrayalEditingSupport.fieldPortrayMap.get(key);
 		cellEditor.setInput(values);
 		
 	}

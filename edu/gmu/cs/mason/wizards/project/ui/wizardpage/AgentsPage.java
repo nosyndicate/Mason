@@ -1,19 +1,24 @@
 package edu.gmu.cs.mason.wizards.project.ui.wizardpage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import edu.gmu.cs.mason.wizards.model.AgentInformation;
 import edu.gmu.cs.mason.wizards.model.FieldInformation;
 import edu.gmu.cs.mason.wizards.model.ProjectInformation;
-import edu.gmu.cs.mason.wizards.project.ProjectWizardConstants;
+import edu.gmu.cs.mason.wizards.MasonWizardConstants;
 import edu.gmu.cs.mason.wizards.project.ui.MasonProjectWizard;
 import edu.gmu.cs.mason.wizards.project.ui.agent.AgentInfoDialog;
 import edu.gmu.cs.mason.wizards.project.ui.agent.AgentInfoViewer;
+
+import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
@@ -35,6 +40,8 @@ public class AgentsPage extends MasonWizardPage{
 	private AgentInformation selectedAgentInfo;
 	public ArrayList<AgentInformation> agentInfoList;
 	
+	
+	
 	//widget
 	private AgentInfoDialog dialog;
 	private Button addButton;
@@ -53,9 +60,10 @@ public class AgentsPage extends MasonWizardPage{
 		this.setTitle(TITLE);
 		this.setDescription(DESCRIPTION);
 		this.projectInfo = projectInfo;
-		this.dialog = new AgentInfoDialog(getShell());
+		this.dialog = new AgentInfoDialog(getShell(), this.projectInfo);
 		agentInfoList = new ArrayList<AgentInformation>();
-
+		
+		
 	}
 	
 	
@@ -190,16 +198,26 @@ public class AgentsPage extends MasonWizardPage{
 	}
 	
 	private void addButtonPressed(SelectionEvent e) {
-		int code = dialog.openToAdd(projectInfo.fieldInfoList);
+		int code = dialog.openToAdd();
 		if(code==Window.OK)
 		{
-			agentInfoList.add(this.dialog.agentInfo);
+			AgentInformation agentInfo = this.dialog.agentInfo;
+			agentInfoList.add(agentInfo);
 			agentViewer.refresh();
 		}
 		setPageComplete(validatePage());
 	}
 	
-
+	private void editButtonPressed(SelectionEvent e) {
+		dialog.agentInfo = this.selectedAgentInfo;
+		int code = dialog.openToEdit();
+		if(code==Window.OK)
+		{
+			agentViewer.refresh();
+		}
+		setPageComplete(validatePage());
+	}
+	
 
 	private void removeButtonPressed(SelectionEvent e) {
 		
@@ -208,15 +226,6 @@ public class AgentsPage extends MasonWizardPage{
 		setPageComplete(validatePage());
 	}
 	
-	private void editButtonPressed(SelectionEvent e) {
-		dialog.agentInfo = this.selectedAgentInfo;
-		int code = dialog.openToEdit(projectInfo.fieldInfoList);
-		if(code==Window.OK)
-		{
-			agentViewer.refresh();
-		}
-		setPageComplete(validatePage());
-	}
 	
 	protected boolean validatePage() {
 		if(!this.checkAgents())
@@ -227,21 +236,36 @@ public class AgentsPage extends MasonWizardPage{
 	}
 
 	
-	// Agent cannot have the same name with simstate class
 	private boolean checkAgents() {
-		for(int i = 0;i<agentInfoList.size();++i)
+
+		HashMap<String, Integer> agentNameMap = new HashMap<String, Integer>();
+		
+		// go through all the agents check if they are valid
+		for(AgentInformation a:this.agentInfoList)
 		{
-			AgentInformation information = agentInfoList.get(i);
-			if(projectInfo.simStateClassName.equals(information.getAgentName()))
+			// Agent cannot have the same name with simstate class
+			if(projectInfo.simStateClassName.equals(a.getAgentName()))
 			{
-				setErrorMessage(ProjectWizardConstants.Message.AGENT_NAME_ERROR);
+				setErrorMessage(MasonWizardConstants.Message.AGENT_NAME_ERROR);
 				return false;
 			}
+			
+			// if other agents have the same name, that's illegal
+			if(agentNameMap.containsKey(a.getAgentName()))
+			{
+				setErrorMessage(MasonWizardConstants.Message.AGENT_NAME_ERROR);
+				return false;
+			}
+			else {
+				agentNameMap.put(a.getAgentName(), 1);
+			}
+			
 		}
-		setErrorMessage(null);
+		
+		this.setErrorMessage(null);
 		return true;
 	}
-
+	
 
 	
 	//if we delete a field in the previous page, we should update the result here
@@ -275,6 +299,8 @@ public class AgentsPage extends MasonWizardPage{
 	{
 		this.projectInfo.agentInfoList = this.agentInfoList;
 	}
+
+
 	
 	
 }

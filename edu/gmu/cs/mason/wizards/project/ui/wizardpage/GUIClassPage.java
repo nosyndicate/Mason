@@ -1,7 +1,7 @@
 package edu.gmu.cs.mason.wizards.project.ui.wizardpage;
 
 import edu.gmu.cs.mason.wizards.model.ProjectInformation;
-import edu.gmu.cs.mason.wizards.project.ProjectWizardConstants;
+import edu.gmu.cs.mason.wizards.MasonWizardConstants;
 import edu.gmu.cs.mason.wizards.project.ui.MasonProjectWizard;
 import edu.gmu.cs.mason.wizards.project.ui.agent.AgentPortrayalViewer;
 import edu.gmu.cs.mason.wizards.project.ui.field.FieldPortrayalViewer;
@@ -90,7 +90,7 @@ public class GUIClassPage extends MasonWizardPage {
 		createGUIGroup(container);
 		createDisplayGroup(container);
 		createFieldPortrayalGroup(container);
-		createAgentPortrayalGroup(container);
+		//createAgentPortrayalGroup(container);
 
 		// Required to avoid an error in the system
 		setControl(container);
@@ -151,6 +151,8 @@ public class GUIClassPage extends MasonWizardPage {
 			this.widthText.setEnabled(false);
 			this.heightText.setEnabled(false);
 		}
+		
+		saveDataToModel();
 
 	}
 
@@ -248,25 +250,26 @@ public class GUIClassPage extends MasonWizardPage {
 
 	}
 
-	private void createAgentPortrayalGroup(Composite container) {
-		Group group = new Group(container, SWT.NONE);
-
-		// Configure our group
-		group.setFont(container.getFont());
-		group.setText(AGENTS_PORTRAY);
-		group.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-		GridLayout layout = new GridLayout(1, false);
-		// layout = this.configureLayout(layout);
-		group.setLayout(layout);
-
-		agentPortrayViewer = new AgentPortrayalViewer(group, SWT.MULTI
-				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-
-		agentPortrayViewer.setLayoutData(new GridData(GridData.FILL,
-				GridData.FILL, true, true));
-
-	}
+//	private void createAgentPortrayalGroup(Composite container) {
+//		Group group = new Group(container, SWT.NONE);
+//
+//		// Configure our group
+//		group.setFont(container.getFont());
+//		group.setText(AGENTS_PORTRAY);
+//		group.setLayoutData(new GridData(GridData.FILL_BOTH));
+//
+//		GridLayout layout = new GridLayout(1, false);
+//		// layout = this.configureLayout(layout);
+//		group.setLayout(layout);
+//
+//		agentPortrayViewer = new AgentPortrayalViewer(group, SWT.MULTI
+//				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+//
+//		agentPortrayViewer.setLayoutData(new GridData(GridData.FILL,
+//				GridData.FILL, true, true));
+//	}
+	
+	
 
 	@Override
 	protected void saveDataToModel() {
@@ -309,7 +312,7 @@ public class GUIClassPage extends MasonWizardPage {
 			Integer.parseInt(this.widthText.getText());
 			Integer.parseInt(this.heightText.getText());
 		} catch (NumberFormatException e) {
-			setErrorMessage(ProjectWizardConstants.Message.DISPLAY_ERROR);
+			setErrorMessage(MasonWizardConstants.Message.DISPLAY_ERROR);
 			return false;
 		}
 
@@ -321,7 +324,7 @@ public class GUIClassPage extends MasonWizardPage {
 	public void setVisible(boolean visible) {
 		if (visible) {
 			fieldPortrayViewer.setInput(projectInfo.fieldInfoList);
-			agentPortrayViewer.setInput(projectInfo.agentInfoList);
+			//agentPortrayViewer.setInput(projectInfo.agentInfoList);
 		}
 		
 		if(firstVisit)
@@ -357,7 +360,9 @@ public class GUIClassPage extends MasonWizardPage {
 	}
 
 	public void disposeResource() {
-		this.agentPortrayViewer.disposeColors();
+		//this.agentPortrayViewer.disposeColors();
 	}
+	
+	
 
 }

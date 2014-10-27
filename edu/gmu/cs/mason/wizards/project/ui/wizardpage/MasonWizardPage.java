@@ -58,18 +58,25 @@ public abstract class MasonWizardPage extends WizardPage {
 
 	protected Text addStringFieldEditor(Composite container, String label) {
 		Composite group = new Composite(container, SWT.NONE);
-		group.setLayout(new GridLayout(2, false));
+		
+		// it turns out this is the only method I can make it align
+		// use the 5 columns with equal width
+		group.setLayout(new GridLayout(5, true));
 		group.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		
 		group.setFont(container.getFont());
+
 
 		Label nameLabel = new Label(group, SWT.NONE);
 		nameLabel.setText(label);
-		nameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-				false));
 		nameLabel.setFont(group.getFont());
 
 		Text text = new Text(group, SWT.BORDER);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		GridData gridData = new GridData();
+		gridData.horizontalAlignment = SWT.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.horizontalSpan = 4;
+		text.setLayoutData(gridData);
 		text.setFont(group.getFont());
 
 		return text;

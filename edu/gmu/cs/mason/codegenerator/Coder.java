@@ -399,8 +399,12 @@ public class Coder {
 	public static MethodInvocation methodInvocation(AST ast, String expression, String identifier, Expression[] arguments) {
 		MethodInvocation methodInvocation = ast.newMethodInvocation();
 		
-		methodInvocation.setExpression(Coder.expressionDef(ast, expression));
+		if(expression!=null)
+			methodInvocation.setExpression(Coder.expressionDef(ast, expression));
 		methodInvocation.setName(ast.newSimpleName(identifier));
+		if(arguments==null)
+			return methodInvocation;
+		
 		for(int i = 0;i<arguments.length;++i)
 		{
 			methodInvocation.arguments().add(arguments[i]);

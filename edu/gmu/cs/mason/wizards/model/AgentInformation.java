@@ -27,11 +27,13 @@ public class AgentInformation {
 	private boolean oriented;
 	private String label;
 	private SimplePortrayal portrayal;
-	//public ArrayList<TemplateInsertion> insertionList;
+	private String packageName;
 	
+	
+
 	public AgentInformation()
 	{
-		//insertionList = new ArrayList<TemplateInsertion>();
+
 		color = new RGB(255,255,0);
 		movable = false;
 		oriented = false;
@@ -40,6 +42,16 @@ public class AgentInformation {
 	}
 	
 
+	public String getPackageName() {
+		return packageName;
+	}
+
+
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
+	}
+
+	
 	public FieldInformation getField() {
 		return field;
 	}

@@ -5,7 +5,7 @@ import edu.gmu.cs.mason.Activator;
 import edu.gmu.cs.mason.preferences.PreferenceConstants;
 import edu.gmu.cs.mason.util.MasonDirectoryVerifier;
 import edu.gmu.cs.mason.wizards.model.ProjectInformation;
-import edu.gmu.cs.mason.wizards.project.ProjectWizardConstants;
+import edu.gmu.cs.mason.wizards.MasonWizardConstants;
 import edu.gmu.cs.mason.wizards.project.ui.MasonProjectWizard;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -130,7 +130,7 @@ public class ProjectInfoPage extends WizardNewProjectCreationPage {
 		directoryText.setLayoutData(data);
 		
 		IPreferenceStore preference = Activator.getDefault().getPreferenceStore();
-		String preferencePath= preference.getString(PreferenceConstants.DIRECTORY);
+		String preferencePath= preference.getString(PreferenceConstants.PreferenceKey.DIRECTORY);
 		directoryText.setText(preferencePath);
 		directoryText.addModifyListener(modifyListener);
 		
@@ -246,7 +246,7 @@ public class ProjectInfoPage extends WizardNewProjectCreationPage {
 			MasonDirectoryVerifier verifier = MasonDirectoryVerifier.getInstance();
 			if(!verifier.isMasonDirectory(directoryText.getText()))
 			{
-				setErrorMessage(ProjectWizardConstants.Message.MASON_DIRECTORY_ERROR);
+				setErrorMessage(MasonWizardConstants.Message.MASON_DIRECTORY_ERROR);
 				return false;
 			}
 			else

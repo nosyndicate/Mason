@@ -34,6 +34,7 @@ import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.jface.text.*;
+import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.templates.Template;
 import org.eclipse.jdt.launching.JavaRuntime;
 
@@ -42,7 +43,8 @@ import org.eclipse.jdt.launching.JavaRuntime;
 public class UnitCreator {
 	private ProjectInformation projectInfo;
 	private IJavaProject jProject;
-	private IPackageFragment fragment;
+	private IPackageFragment mainFragment; // this package store the State class
+	private IPackageFragmentRoot srcFolder; // this is the src folder
 	private ICompilationUnit stateFile;
 	private ICompilationUnit GUIFile;
 	private ArrayList<ICompilationUnit> agentFileList;
@@ -176,11 +178,15 @@ public class UnitCreator {
 	
 	public ICompilationUnit createGUISrc()
 	{
+		System.out.println(projectInfo.withGUI);
+		if(!projectInfo.withGUI)
+			return null;
+		
 		String unitName = projectInfo.GUIClassName+".java";
 		String source = new String();
 
 		try {
-			GUIFile = fragment.createCompilationUnit(unitName, source, false, null);
+			GUIFile = mainFragment.createCompilationUnit(unitName, source, false, null);
 			
 			GUIFactory factory = GUIFactory.getInstance(GUIFile,projectInfo);
 			factory.generateGUIFile();
@@ -203,7 +209,7 @@ public class UnitCreator {
 		String source = new String();
 
 		try {
-			stateFile = fragment.createCompilationUnit(unitName, source, false, null);
+			stateFile = mainFragment.createCompilationUnit(unitName, source, false, null);
 			
 			SimStateFactory factory = SimStateFactory.getInstance(stateFile,projectInfo);
 			factory.generateSimStateFile();
@@ -275,17 +281,19 @@ public class UnitCreator {
 
 	public void createPackage() {
 		IProject project = jProject.getProject();
-		IPackageFragmentRoot srcFolder = null;
+
 		
 		
 		if(projectInfo.singleFolder)
-			srcFolder = jProject.getPackageFragmentRoot(project);
+			this.srcFolder = jProject.getPackageFragmentRoot(project);
 		else
-			srcFolder = jProject.getPackageFragmentRoot(project.getFolder("src"));
+			this.srcFolder = jProject.getPackageFragmentRoot(project.getFolder("src"));
 		//create package fragment
 		try {
 
-			fragment = srcFolder.createPackageFragment(projectInfo.packageName, true, null);
+			mainFragment = srcFolder.createPackageFragment(projectInfo.packageName, true, null);
+			
+			
 		} catch (JavaModelException e) {
 			e.printStackTrace();
 		}
@@ -310,12 +318,20 @@ public class UnitCreator {
 	
 	public ICompilationUnit createAgentSrc(String agentIdentifier, AgentInformation info, ProjectInformation projectInfo)
 	{
+		// first make sure the package exist, if not, create it
+		IPackageFragment fragment = null;
+		try {
+			fragment = srcFolder.createPackageFragment(info.getPackageName(), true, null);
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		}
+		
+		
 		String unitName = agentIdentifier+".java";
 		String source = new String();
 		ICompilationUnit unit = null;
 		try {
 			unit = fragment.createCompilationUnit(unitName, source, false, null);
-			
 			AgentFactory factory = AgentFactory.getInstance(unit,info, projectInfo);
 			factory.generateAgentFile();
 			//this.insertionOffsetMap.putAll(factory.getInsertionPoint());

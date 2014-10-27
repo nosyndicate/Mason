@@ -2,9 +2,11 @@ package edu.gmu.cs.mason.wizards.project.ui.wizardpage;
 
 import java.util.ArrayList;
 
+import edu.gmu.cs.mason.Activator;
+import edu.gmu.cs.mason.preferences.PreferenceConstants;
 import edu.gmu.cs.mason.wizards.model.FieldInformation;
 import edu.gmu.cs.mason.wizards.model.ProjectInformation;
-import edu.gmu.cs.mason.wizards.project.ProjectWizardConstants;
+import edu.gmu.cs.mason.wizards.MasonWizardConstants;
 import edu.gmu.cs.mason.wizards.project.ui.MasonProjectWizard;
 import edu.gmu.cs.mason.wizards.project.ui.field.FieldInfoDialog;
 import edu.gmu.cs.mason.wizards.project.ui.field.FieldInfoViewer;
@@ -12,6 +14,7 @@ import edu.gmu.cs.mason.wizards.project.ui.field.FieldInfoViewer;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -36,7 +39,8 @@ public class SimulationClassPage extends MasonWizardPage {
 	// Here is some fixed String that will be used to display in the dialog
 	private static final String TITLE = "New MASON Class";
 	private static final String DESCRIPTION = "Define Simluation Fields";
-	private static final String DEFAULTPACKAGE = "sim.app.";
+	
+
 	private static final String REMOVE_BUTTON = "Remove";
 	private static final String EDIT_BUTTON = "Edit";
 	private static final String ADD_BUTTON = "Add";
@@ -49,6 +53,7 @@ public class SimulationClassPage extends MasonWizardPage {
 	private FieldInformation selectedFieldInfo;
 	private String projectName = "Default";
 	public ArrayList<FieldInformation> fieldInfoList;
+	private ModifyListener modifyListener;
 	
 	//widgets
 	private Button addButton;
@@ -70,6 +75,14 @@ public class SimulationClassPage extends MasonWizardPage {
 		this.projectInfo = projectInfo;
 		this.dialog = new FieldInfoDialog(getShell());
 		fieldInfoList = new ArrayList<FieldInformation>();
+		
+		this.modifyListener = new ModifyListener() {
+			
+			public void modifyText(ModifyEvent e) {
+				boolean validate = validatePage();
+				setPageComplete(validate);
+			}
+		};
 	}
 
 	
@@ -78,14 +91,14 @@ public class SimulationClassPage extends MasonWizardPage {
 		
         initializeDialogUnits(parent);
 		
+        
         // Set layout and font
         container.setLayout(new GridLayout(1,false));
         container.setLayoutData(new GridData(GridData.FILL_BOTH));
         container.setFont(parent.getFont());
 
         // Create control for group
-  	    createNameGroup(container);
-	    createPackageGroup(container);
+  	    createPackageAndNameGroup(container);
 	    createFieldViewGroup(container);
 
 	    // Required to avoid an error in the system
@@ -247,30 +260,17 @@ public class SimulationClassPage extends MasonWizardPage {
 	}
 	
 
-	private void createPackageGroup(Composite container) {
-		packageText = addStringFieldEditor(container,PACKAGE);
-		
-		packageText.addModifyListener(new ModifyListener() {
-			
-			public void modifyText(ModifyEvent e) {
-				boolean validate = validatePage();
-				setPageComplete(validate);
-			}
-		});
-	}
+	
 	
 
-	private void createNameGroup(Composite container) {
+	private void createPackageAndNameGroup(Composite container) {
 	
+		packageText = addStringFieldEditor(container,PACKAGE);
+		packageText.addModifyListener(this.modifyListener);
+		
 		classNameText = addStringFieldEditor(container, SIMSTATE_CLASS);
-		classNameText.addModifyListener(new ModifyListener() {
-			
-			public void modifyText(ModifyEvent e) {
-				//modifyClassName(e);
-				boolean validate = validatePage();
-				setPageComplete(validate);
-			}
-		});
+		classNameText.addModifyListener(this.modifyListener);
+	
 	}
 
 	
@@ -304,7 +304,7 @@ public class SimulationClassPage extends MasonWizardPage {
 					String secondName = ((FieldInformation)fieldInfoList.get(j)).getFieldName();
 					if(firstName.equals(secondName))
 					{
-						setErrorMessage(ProjectWizardConstants.Message.FIELD_NAME_ERROR);
+						setErrorMessage(MasonWizardConstants.Message.FIELD_NAME_ERROR);
 						return false;
 					}
 				}
@@ -363,8 +363,12 @@ public class SimulationClassPage extends MasonWizardPage {
 			characters[0] = Character.toUpperCase(characters[0]);
 			this.classNameText.setText(new String(characters));
 
+			// the package name should be lower case
+			IPreferenceStore preference = Activator.getDefault().getPreferenceStore();
+			String packagePrefix = preference.getString(PreferenceConstants.PreferenceKey.PACKAGE_PREFIX);
+			String defaultPackageName = projectName.toLowerCase();
+			this.packageText.setText(packagePrefix+"."+defaultPackageName);
 			
-			this.packageText.setText(DEFAULTPACKAGE+projectName);
 			firstVisit = false;
 		}
 		else
