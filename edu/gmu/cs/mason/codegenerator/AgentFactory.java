@@ -1,17 +1,14 @@
 package edu.gmu.cs.mason.codegenerator;
 
 
-import java.util.HashMap;
-
+import edu.gmu.cs.mason.Activator;
 import edu.gmu.cs.mason.wizards.model.AgentInformation;
 import edu.gmu.cs.mason.wizards.model.ProjectInformation;
-
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jface.text.Document;
 
@@ -108,6 +105,7 @@ public class AgentFactory {
 		
 		} catch (JavaModelException e) {
 			e.printStackTrace();
+			Activator.log("agent file create error", e);
 		}
 		
 		Coder.addNeededImports(cu);

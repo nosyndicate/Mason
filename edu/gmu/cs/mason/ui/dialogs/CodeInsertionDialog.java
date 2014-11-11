@@ -6,10 +6,12 @@ import java.util.List;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
+import org.eclipse.jdt.core.ISourceReference;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaElementLabels;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -21,16 +23,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.SelectionStatusDialog;
 
 
 
-public class CodeInsertionDialog extends TrayDialog {
+public class CodeInsertionDialog extends SelectionStatusDialog {
 
 	private List<IJavaElement> insertPositions;
 	private List<String> fLabels;
 	private IType type;
-	private static final String firstElement = "first member";
-	private static final String secondElement = "second member";
+	private static final String firstElement = "First member";
+	private static final String secondElement = "Last member";
 	private static final String afterElement = "After ''{0}''";
 	private static final String insertionPoint = "&Insertion point:";
 	private String message = "";
@@ -64,7 +67,7 @@ public class CodeInsertionDialog extends TrayDialog {
 			fLabels.add(MessageFormat.format(afterElement, methodLabel));
 			insertPositions.add(findSibling(curr, members));
 		}
-		insertPositions.add(null);
+		insertPositions.add(null);  // null indicate we want to insert into the last position
 
 	}
 	
@@ -83,24 +86,22 @@ public class CodeInsertionDialog extends TrayDialog {
 
 
 	
-	@Override
-	protected Control createDialogArea(Composite parent) {
-
+	protected Control createDialogArea(Composite parent){
 		initializeDialogUnits(parent);
 
 		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
-		GridData gd= null;
+		GridData gd = null;
 
-		layout.marginHeight= convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-		layout.marginWidth= convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-		layout.verticalSpacing=	convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-		layout.horizontalSpacing= convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
 		composite.setLayout(layout);
 
 		Label messageLabel = createMessageArea(composite);
 		if (messageLabel != null) {
-			gd= new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+			gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 			gd.horizontalSpan= 2;
 			messageLabel.setLayoutData(gd);
 		}
@@ -111,9 +112,8 @@ public class CodeInsertionDialog extends TrayDialog {
 		return composite;
 	}
 
-	protected String getMessage() {
-		return message;
-	}
+	
+	
 	
 	protected Label createMessageArea(Composite composite) {
 		if (getMessage() != null) {
@@ -123,6 +123,10 @@ public class CodeInsertionDialog extends TrayDialog {
 			return label;
 		}
 		return null;
+	}
+
+	public String getMessage() {
+		return message;
 	}
 
 	public void setMessage(String message) {
@@ -135,7 +139,7 @@ public class CodeInsertionDialog extends TrayDialog {
 		layout.marginHeight= 0;
 		layout.marginWidth= 0;
 		selectionComposite.setLayout(layout);
-
+		composite.setFocus();
 		addOrderEntryChoices(selectionComposite);
 
 		return selectionComposite;
@@ -166,6 +170,7 @@ public class CodeInsertionDialog extends TrayDialog {
 			public void widgetSelected(SelectionEvent e) {
 				int index= enterCombo.getSelectionIndex();
 				setInsertPosition(index);
+				System.out.println(getElementPosition().toString());
 			}
 		});
 
@@ -173,9 +178,28 @@ public class CodeInsertionDialog extends TrayDialog {
 	}
 
 	
-	
+	/*
+	 * Determine where in the file to enter the newly created methods.
+	 */
+	public IJavaElement getElementPosition() {
+		return insertPositions.get(currentPositionIndex);
+	}
+
+	public int getInsertOffset() throws JavaModelException {
+		IJavaElement elementPosition= getElementPosition();
+		if (elementPosition instanceof ISourceReference) {
+			return ((ISourceReference) elementPosition).getSourceRange().getOffset();
+		}
+		return -1;
+	}
 	
 	private void setInsertPosition(int insert) {
 		currentPositionIndex = insert;
+	}
+
+	@Override
+	protected void computeResult() {
+		// TODO Auto-generated method stub
+		
 	}
 }

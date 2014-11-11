@@ -7,13 +7,13 @@ import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.corext.template.java.JavaContext;
-import org.eclipse.jdt.internal.corext.template.java.SignatureUtil;
 import org.eclipse.jdt.internal.ui.text.template.contentassist.MultiVariable;
 import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateVariable;
 import org.eclipse.jface.text.templates.TemplateVariableResolver;
 
 import edu.gmu.cs.mason.Activator;
+import edu.gmu.cs.mason.util.CodeUtil;
 import edu.gmu.cs.mason.wizards.project.ui.field.FieldPortrayalEditingSupport;
 
 @SuppressWarnings("restriction")
@@ -54,7 +54,7 @@ public class FieldPortrayalVariableResolver extends TemplateVariableResolver{
 				IField[] fields = t.getFields();
 				for(IField f:fields)
 				{
-					String fieldType = SignatureUtil.stripSignatureToFQN(f.getTypeSignature());
+					String fieldType = CodeUtil.stripSignatureToFullQualifiedName(f.getTypeSignature());
 					// we reuse the field portrayal map
 					if(FieldPortrayalEditingSupport.fieldPortrayals.containsKey(fieldType))
 						fieldList.add(f.getElementName());

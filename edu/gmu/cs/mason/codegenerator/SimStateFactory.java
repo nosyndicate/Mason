@@ -1,10 +1,6 @@
 package edu.gmu.cs.mason.codegenerator;
 
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
@@ -19,7 +15,7 @@ import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jface.text.Document;
 
-import edu.gmu.cs.mason.wizards.model.AgentInformation;
+import edu.gmu.cs.mason.Activator;
 import edu.gmu.cs.mason.wizards.model.FieldInformation;
 import edu.gmu.cs.mason.wizards.model.ProjectInformation;
 import edu.gmu.cs.mason.wizards.model.FieldInformation.Dimension;
@@ -59,11 +55,6 @@ public class SimStateFactory {
 	}
 	
 	
-	private void parseCompliationUnit() {
-		
-		
-	}
-
 	@SuppressWarnings("unchecked")
 	public void generateSimStateFile()
 	{
@@ -147,6 +138,7 @@ public class SimStateFactory {
 			cu.getBuffer().save(null, false);
 		} catch (JavaModelException e) {
 			e.printStackTrace();
+			Activator.log("SimState file create error", e);
 		}
 		
 		Coder.addNeededImports(cu);

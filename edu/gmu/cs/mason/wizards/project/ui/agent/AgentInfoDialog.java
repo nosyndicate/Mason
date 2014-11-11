@@ -1,12 +1,9 @@
 package edu.gmu.cs.mason.wizards.project.ui.agent;
 
 
-import java.util.ArrayList;
-
 import edu.gmu.cs.mason.Activator;
 import edu.gmu.cs.mason.preferences.PreferenceConstants;
 import edu.gmu.cs.mason.wizards.model.AgentInformation;
-import edu.gmu.cs.mason.wizards.model.FieldInformation;
 import edu.gmu.cs.mason.wizards.model.ProjectInformation;
 
 import org.eclipse.core.runtime.IStatus;
@@ -20,7 +17,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;

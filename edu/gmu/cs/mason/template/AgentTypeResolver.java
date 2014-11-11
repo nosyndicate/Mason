@@ -1,8 +1,6 @@
 package edu.gmu.cs.mason.template;
 
 
-import java.util.ArrayList;
-
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;

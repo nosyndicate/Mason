@@ -2,9 +2,9 @@ package edu.gmu.cs.mason.codegenerator;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
+import edu.gmu.cs.mason.Activator;
 import edu.gmu.cs.mason.nature.MasonProjectNature;
 import edu.gmu.cs.mason.wizards.model.AgentInformation;
 import edu.gmu.cs.mason.wizards.model.ProjectInformation;
@@ -31,11 +31,7 @@ import org.eclipse.jdt.core.formatter.CodeFormatter;
 import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.jface.text.*;
-import org.eclipse.jface.text.information.InformationPresenter;
-import org.eclipse.jface.text.templates.Template;
 import org.eclipse.jdt.launching.JavaRuntime;
 
 
@@ -94,6 +90,7 @@ public class UnitCreator {
 			
 		} catch (CoreException e) {
 			e.printStackTrace();
+			Activator.log("mason project creation error", e);
 			
 		}
 		return jProject;
@@ -116,6 +113,7 @@ public class UnitCreator {
 				folder.create(IResource.FORCE|IResource.DERIVED, true, null);
 			} catch (CoreException e) {
 				e.printStackTrace();
+				Activator.log("Bin folder creation error", e);
 			}
 		}
 		
@@ -124,6 +122,7 @@ public class UnitCreator {
 			jProject.setOutputLocation(path, null);
 		} catch (JavaModelException e) {
 			e.printStackTrace();
+			Activator.log("Bin folder creation error", e);
 		}
 	}
 
@@ -145,6 +144,7 @@ public class UnitCreator {
 				folder.create(true, true, null);
 			} catch (CoreException e) {
 				e.printStackTrace();
+				Activator.log("Src folder creation error", e);
 			}
 		}
 		
@@ -172,6 +172,7 @@ public class UnitCreator {
 			jProject.setRawClasspath(entries, null);
 		} catch (JavaModelException e) {
 			e.printStackTrace();
+			Activator.log("build path initialization error", e);
 		}
 	}
 	
@@ -193,8 +194,10 @@ public class UnitCreator {
 			 
 		} catch (JavaModelException e) {
 			e.printStackTrace();
+			Activator.log("GUI file creation error", e);
 		} catch (MalformedTreeException e) {
 			e.printStackTrace();
+			Activator.log("GUI file creation error", e);
 		}
 		return GUIFile;
 	}

@@ -1,8 +1,6 @@
 package edu.gmu.cs.mason.wizards.agent;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;

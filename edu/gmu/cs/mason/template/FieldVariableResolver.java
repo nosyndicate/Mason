@@ -4,20 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.core.Signature;
 import org.eclipse.jdt.internal.corext.template.java.JavaContext;
-import org.eclipse.jdt.internal.corext.template.java.SignatureUtil;
 import org.eclipse.jdt.internal.ui.text.template.contentassist.MultiVariable;
 import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateVariable;
 import org.eclipse.jface.text.templates.TemplateVariableResolver;
 
 import edu.gmu.cs.mason.Activator;
-import edu.gmu.cs.mason.wizards.model.FieldInformation.PortrayalType;
+import edu.gmu.cs.mason.util.CodeUtil;
 import edu.gmu.cs.mason.wizards.project.ui.field.FieldPortrayalEditingSupport;
 
 @SuppressWarnings("restriction")
@@ -57,7 +53,7 @@ public class FieldVariableResolver extends TemplateVariableResolver{
 				IField[] fields = t.getFields();
 				for(IField f:fields)
 				{
-					String fieldType = SignatureUtil.stripSignatureToFQN(f.getTypeSignature());
+					String fieldType = CodeUtil.stripSignatureToFullQualifiedName(f.getTypeSignature());
 					// we reuse the field portrayal map
 					if(FieldPortrayalEditingSupport.fieldPortrayMap.containsKey(fieldType))
 						fieldList.add(f.getElementName());

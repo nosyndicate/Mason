@@ -4,7 +4,6 @@ package edu.gmu.cs.mason.codegenerator;
 import java.util.Comparator;
 import java.util.Map;
 
-
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
@@ -437,7 +436,7 @@ public class Coder {
 }
 
 
-class StatementComparator implements Comparator
+class StatementComparator implements Comparator<Object>
 {
 
 	public int compare(Object arg0, Object arg1) {

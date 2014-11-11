@@ -1,7 +1,5 @@
 package edu.gmu.cs.mason.wizards;
 
-import edu.gmu.cs.mason.wizards.project.ui.MasonProjectWizard;
-
 
 
 public class MasonWizardConstants {

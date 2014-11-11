@@ -11,14 +11,11 @@ import edu.gmu.cs.mason.wizards.project.ui.MasonProjectWizard;
 import edu.gmu.cs.mason.wizards.project.ui.agent.AgentInfoDialog;
 import edu.gmu.cs.mason.wizards.project.ui.agent.AgentInfoViewer;
 
-import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;

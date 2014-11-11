@@ -58,12 +58,7 @@
             locationURI="popup:org.eclipse.jdt.ui.source.menu?after=edu.gmu.cs.mason.menu.source.separator">
          <command
                commandId="edu.gmu.cs.mason.command.GenerateProperty"
-               label="Generate Property"
-               style="push">
-         </command>
-         <command
-               commandId="edu.gmu.cs.mason.command.AddGrid"
-               label="Add Grid"
+               label="Generate Mason Extension for Property"
                style="push">
          </command>
       </menuContribution>
@@ -90,9 +85,9 @@
       </category>
       <command
             categoryId="edu.gmu.cs.mason.command.category"
-            defaultHandler="edu.gmu.cs.mason.handlers.GridAdditionHandler"
+            defaultHandler="edu.gmu.cs.mason.handlers.GridGenerationHandler"
             id="edu.gmu.cs.mason.command.AddGrid"
-            name="Add Grid">
+            name="Generate Grid">
       </command>
    </extension>
    <extension

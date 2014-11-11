@@ -2,12 +2,11 @@ package edu.gmu.cs.mason.codegenerator;
 
 
 
+import edu.gmu.cs.mason.Activator;
 import edu.gmu.cs.mason.wizards.model.AgentInformation;
 import edu.gmu.cs.mason.wizards.model.FieldInformation;
 import edu.gmu.cs.mason.wizards.model.ProjectInformation;
-import edu.gmu.cs.mason.wizards.model.AgentInformation.SimplePortrayal;
 import edu.gmu.cs.mason.wizards.model.FieldInformation.PortrayalType;
-
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -215,6 +214,7 @@ public class GUIFactory {
 
 		} catch (JavaModelException e) {
 			e.printStackTrace();
+			Activator.log("GUI file create error", e);
 		}
 		
 		Coder.addNeededImports(cu);
